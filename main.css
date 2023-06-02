@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.bex{
+    text-align: center;
+    margin-top: 100px;
+}
+
+.watch{
+    margin-left: 670px;
+    margin-top: 100px;
+    font-size: 50px;
+}
+
+.controls{
+    margin-left: -47px;
+}
+
+#start{
+    background-color: rgb(58, 236, 30);
+    color: white;
+    font-style: normal;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 28px;
+}
+
+#stop{
+    background-color: rgba(246, 46, 46, 0.911);
+    color: white;
+    font-style: normal;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 28px;
+}
+
+#reset{
+    background-color: gray;
+    color: white;
+    font-style: normal;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 28px;
+}
