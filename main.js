@@ -1,44 +1,78 @@
-const time_el = document.querySelector('.watch .time');
-const start_btn = document.getElementById('start');
-const stop_btn = document.getElementById("stop");
-const reset_btn = document.getElementById("reset");
-
-let seconds = 0;
-let interval = null;
-
-start_btn.addEventListener('click', start);
-stop_btn.addEventListener("click", stop);
-reset_btn.addEventListener("click", reset);
-
-function timer () {
-	seconds++;
-
-	let hrs = Math.floor(seconds / 3600);
-	let mins = Math.floor((seconds - (hrs * 3600)) / 60);
-	let secs = seconds % 60;
-
-	if (secs < 10) secs = '0' + secs;
-	if (mins < 10) mins = "0" + mins;
-	if (hrs < 10) hrs = "0" + hrs;
-
-	time_el.innerText = `${hrs}:${mins}:${secs}`;
-}
-
-function start () {
-	if (interval) {
-		return
-	}
-
-	interval = setInterval(timer, 1000);
-}
-
-function stop () {
-	clearInterval(interval);
-	interval = null;
-}
-
-function reset () {
-	stop();
-	seconds = 0;
-	time_el.innerText = '00:00:00';
-}
+var pomodoro = {
+    started : false,
+    minutes : 0,
+    seconds : 0,
+    fillerHeight : 0,
+    fillerIncrement : 0,
+    interval : null,
+    minutesDom : null,
+    secondsDom : null,
+    fillerDom : null,
+    init : function(){
+      var self = this;
+      this.minutesDom = document.querySelector('#minutes');
+      this.secondsDom = document.querySelector('#seconds');
+      this.fillerDom = document.querySelector('#filler');
+      this.interval = setInterval(function(){
+        self.intervalCallback.apply(self);
+      }, 1000);
+      document.querySelector('#work').onclick = function(){
+        self.startWork.apply(self);
+      };
+      document.querySelector('#stop').onclick = function(){
+        self.stopTimer.apply(self);
+      };
+      document.querySelector('#reset').onclick = function(){
+        self.resetTimer.apply(self);
+      };
+    },
+    resetVariables : function(mins, secs, started){
+      this.minutes = mins;
+      this.seconds = secs;
+      this.started = started;
+      this.fillerIncrement = 200/(this.minutes*60);
+      this.fillerHeight = 0;  
+    },
+    startWork: function() {
+      this.resetVariables(25, 0, true);
+    },
+    stopTimer : function(){
+      this.resetVariables(25, 0, false);
+    },
+    resetTimer : function(){
+      this.updateDom();
+    },
+    toDoubleDigit : function(num){
+      if(num < 10) {
+        return "0" + parseInt(num, 10);
+      }
+      return num;
+    },
+    updateDom : function(){
+      this.minutesDom.innerHTML = this.toDoubleDigit(this.minutes);
+      this.secondsDom.innerHTML = this.toDoubleDigit(this.seconds);
+      this.fillerHeight = this.fillerHeight + this.fillerIncrement;
+      this.fillerDom.style.height = this.fillerHeight + 'px';
+    },
+    intervalCallback : function(){
+      if(!this.started) return false;
+      if(this.seconds == 0) {
+        if(this.minutes == 0) {
+          this.timerComplete();
+          return;
+        }
+        this.seconds = 59;
+        this.minutes--;
+      } else {
+        this.seconds--;
+      }
+      this.updateDom();
+    },
+    timerComplete : function(){
+      this.started = false;
+      this.fillerHeight = 0;
+    }
+};
+window.onload = function(){
+  pomodoro.init();
+};
